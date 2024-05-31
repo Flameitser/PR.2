@@ -1,7 +1,10 @@
 # Этапы Работы
 
 1. Создание репозитория на GitHub
-![image](https://github.com/Flameitser/PR/assets/65831927/e2d5d8be-d902-490a-86b8-ecfa21fb5bb7)
+
+![image](https://github.com/Flameitser/PR.2/assets/65831927/94e6281d-f71e-406a-bf7c-026bc9a9de47)
+
+
 
 
 2. Создание репозитория на локальном Git
