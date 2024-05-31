@@ -8,36 +8,68 @@ Original file is located at
 """
 
 import random
-import string
+from datetime import datetime, timedelta
+import pandas as pd
 
-def generate_password(length):
-    if length < 8 or length > 32:
-        raise ValueError("Password length must be between 8 and 32 characters.")
+# Создание классов для студентов и зачетки
+class GradeBook:
+    def __init__(self, subjects):
+        self.entries = subjects
 
-    # Создаем наборы символов
-    lowercase_letters = string.ascii_lowercase
-    uppercase_letters = string.ascii_uppercase
-    digits = string.digits
-    special_characters = string.punctuation
+class Student:
+    def __init__(self, first_name, last_name, birthdate, gradebook):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.birthdate = birthdate
+        self.gradebook = gradebook
 
-    # Гарантируем, что пароль будет содержать хотя бы один символ каждого типа
-    password = [
-        random.choice(lowercase_letters),
-        random.choice(uppercase_letters),
-        random.choice(digits),
-        random.choice(special_characters)
-    ]
+# Функция для генерации случайных дат
+def random_date(start, end):
+    return start + timedelta(days=random.randint(0, (end - start).days))
 
-    # Добавляем случайные символы до достижения необходимой длины
-    all_characters = lowercase_letters + uppercase_letters + digits + special_characters
-    password += random.choices(all_characters, k=length-4)
+# Функция для генерации случайных имен и фамилий
+def random_name():
+    first_names = ["Алексей", "Иван", "Петр", "Михаил", "Дмитрий", "Екатерина", "Мария", "Анна", "Елена", "Ольга"]
+    last_names = ["Иванов", "Петров", "Сидоров", "Кузнецов", "Попов", "Смирнов", "Федоров", "Морозов", "Новиков", "Соколов"]
+    return random.choice(first_names), random.choice(last_names)
 
-    # Перемешиваем символы пароля
-    random.shuffle(password)
+# Функция для генерации случайной зачетки
+def random_gradebook():
+    subjects = ["Математика", "Физика", "Информатика", "История", "Литература", "Химия", "Биология"]
+    professors = ["Сергей Иванович Петров", "Мария Ивановна Соколова", "Алексей Николаевич Кузнецов", "Ольга Сергеевна Новикова", "Петр Петрович Смирнов"]
 
-    return ''.join(password)
+    entries = []
+    num_subjects = random.randint(3, 5)
+    for _ in range(num_subjects):
+        subject = random.choice(subjects)
+        exam_date = random_date(datetime(2023, 1, 1), datetime(2023, 12, 31))
+        professor = random.choice(professors)
+        entries.append((subject, exam_date, professor))
+    return GradeBook(entries)
 
-# Пример использования
-password_length = 16
-password = generate_password(password_length)
-print(f"Generated password: {password}")
+# Генерация списка студентов
+def generate_students(num_students):
+    students = []
+    for _ in range(num_students):
+        first_name, last_name = random_name()
+        birthdate = random_date(datetime(2000, 1, 1), datetime(2005, 12, 31))
+        gradebook = random_gradebook()
+        student = Student(first_name, last_name, birthdate, gradebook)
+        students.append(student)
+    return students
+
+# Вывод таблицы с ФИО всех преподавателей
+def print_professors_table(students):
+    professors_set = set()
+    for student in students:
+        for subject, exam_date, professor in student.gradebook.entries:
+            professors_set.add(professor)
+
+    professors_list = list(professors_set)
+    professors_df = pd.DataFrame(professors_list, columns=["ФИО Преподавателя"])
+    print(professors_df)
+
+# Генерация и вывод данных
+num_students = 10  # Количество студентов
+students = generate_students(num_students)
+print_professors_table(students)
